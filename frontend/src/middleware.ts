@@ -20,8 +20,16 @@ export function middleware(req: NextRequest) {
   // Check if it's localhost or an actual domain. 
   // Make sure it's not an IP address (e.g. 192.168.x.x)
   const isIp = /^(\d{1,3}\.){3}\d{1,3}/.test(hostname);
-  if (hostParts.length >= 2 && !hostname.startsWith('localhost') && !isIp) {
-    subdomain = hostParts[0];
+  if (!isIp && !hostname.startsWith('localhost')) {
+    if (hostname.includes('.localhost') && hostParts.length >= 2) {
+      // e.g. danny.localhost:3000
+      subdomain = hostParts[0];
+    } else if (hostParts.length >= 3) {
+      // e.g. danny.example.com
+      if (hostParts[0] !== 'www') {
+        subdomain = hostParts[0];
+      }
+    }
   }
 
   // Determine Language
