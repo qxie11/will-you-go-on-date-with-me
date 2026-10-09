@@ -101,7 +101,8 @@ export default function DatePage() {
     e.preventDefault();
     sound.dodge();
 
-    setNoIndex((prev) => Math.min(prev + 1, t('public.dodgingButtons', { returnObjects: true }).length - 1));
+    const dodgeTexts = t('public.dodgingButtons', { returnObjects: true }) as string[];
+    setNoIndex((prev) => Math.min(prev + 1, dodgeTexts.length - 1));
     const maxOffset = Math.min(window.innerWidth * 0.35, 180);
     const x = (Math.random() - 0.5) * (maxOffset * 2);
     const y = (Math.random() - 0.5) * (maxOffset * 1.5);
@@ -356,7 +357,7 @@ export default function DatePage() {
                 onTouchStart={handleNoDodge}
                 onClick={handleNoDodge}
               >
-                {t('public.dodgingButtons', { returnObjects: true })[noIndex]}
+                {(t('public.dodgingButtons', { returnObjects: true }) as string[])[noIndex]}
               </button>
             </div>
           </div>
