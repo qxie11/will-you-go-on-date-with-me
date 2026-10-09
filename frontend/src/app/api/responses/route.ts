@@ -27,23 +27,28 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 
-  if (!id) {
-    return NextResponse.json({ error: 'ID is required' }, { status: 400 });
-  }
-
   try {
-    const { data, error } = await supabase
-      .from('responses')
-      .select('payload')
-      .eq('config_id', id)
-      .order('created_at', { ascending: false });
+    let query = supabase.from('responses').select('id, config_id, payload, created_at').order('created_at', { ascending: false });
+    
+    if (id) {
+      query = query.eq('config_id', id);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const payloads = data.map((row) => row.payload);
-    return NextResponse.json(payloads);
+    // Map payload into root level to match old NestJS structure
+    const responses = data.map((row) => ({
+      id: row.id,
+      configId: row.config_id,
+      timestamp: row.created_at,
+      ...row.payload,
+    }));
+    
+    return NextResponse.json(responses);
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
