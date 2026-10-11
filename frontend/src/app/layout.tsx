@@ -4,8 +4,6 @@ import I18nProvider from "./I18nProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Will You Go On A Date With Me? 💖",
-  description: "A very special interactive date proposal invitation",
   icons: {
     icon: "/favicon.ico",
   },
